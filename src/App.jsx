@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
 import SelectDropDown from "./components/SelectDropDown";
 
 export default function App() {
@@ -79,15 +81,13 @@ export default function App() {
       />
 
       {audioUrl && (
-        <audio
-          ref={audioRef}
-          controls
-          preload="metadata"
-          style={{ width: "100%", marginTop: 16 }}
-        >
-          <source src={audioUrl} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
+        <AudioPlayer
+          autoPlay={false}
+          src={audioUrl}
+          showJumpControls={false}
+          showSkipControls={false}
+          customAdditionalControls={[]}
+        />
       )}
     </div>
   );

@@ -1,12 +1,22 @@
-# React + Vite
+# Iqrah Quran Reciter Chrome Extension
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight Chrome extension that lets you quickly browse any of the 114 Surahs of the Qur’an, pick an Ayah, and listen to a high-quality recitation straight from your browser toolbar.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Surah & Ayah Dropdowns**  
+  Dynamically populate Surah and Ayah lists from a local JSON dataset.
+- **Continuous Audio Playback**  
+  Builds the correct “absolute” verse number (cumulative across all Surahs) and loads the matching `*.mp3` file from the Islamic Network CDN.
+- **Pure React UI**  
+  Fast, responsive controls with React hooks and a custom `<SelectDropDown>` component.
+- **Zero Dependencies in Production**  
+  Audio is streamed directly from `https://cdn.islamic.network/quran/audio/128/ar.alafasy/<verse>.mp3`—no backend or API keys required.
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Clone the repo**  
+   ```bash
+   git clone https://github.com/your-username/quran-reciter-chrome-extension.git
+   cd quran-reciter-chrome-extension
+

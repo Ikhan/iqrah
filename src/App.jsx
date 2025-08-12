@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
+import AudioPlayerSection from "./components/AudioSelection";
 import SelectDropDown from "./components/SelectDropDown";
-
+import { data } from "./data/quran";
+import { QuranContext } from "./QuranContext";
 export default function App() {
   const [surahs, setSurahs] = useState([]);
   const [selectedSurahIdx, setSelectedSurahIdx] = useState("");
@@ -12,9 +13,7 @@ export default function App() {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    import("./data/quran.json")
-      .then(({ default: data }) => setSurahs(data))
-      .catch((e) => console.error("Error loading surahs:", e));
+    setSurahs(data);
   }, []);
 
   const selectedSurah = useMemo(
@@ -35,60 +34,54 @@ export default function App() {
       .reduce((sum, s) => sum + s.count, 0);
     let verse = versesBefore + Number(selectedAyah);
 
-    // Example: if you need special Fātiḥah shifting, uncomment:
-    // if (surahIndex === 0) verse += 1;
-
     return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${verse}.mp3`;
   }, [selectedSurahIdx, selectedAyah, surahs]);
 
-  useEffect(() => {
-    if (audioRef.current && audioUrl) {
-      audioRef.current.load();
-      // audioRef.current.play().catch(() => {});
-    }
-  }, [audioUrl]);
-
-  // 6) Handlers
   const handleSurahChange = useCallback((e) => {
     setSelectedSurahIdx(e.target.value);
-    setSelectedAyah(""); // reset ayah when surah changes
+    setSelectedAyah("");
   }, []);
 
   const handleAyahChange = useCallback((e) => {
     setSelectedAyah(e.target.value);
   }, []);
 
+  const contextValue = {
+    surahs,
+    selectedSurahIdx,
+    selectedAyah,
+    ayahs,
+    audioUrl,
+    audioRef,
+    handleSurahChange,
+    handleAyahChange,
+  };
+
   return (
-    <div style={{ padding: 24 }}>
-      <SelectDropDown
-        label="Surah"
-        options={surahs.map((s) => ({
-          value: s.index,
-          label: `${s.index}. ${s.title}`,
-        }))}
-        value={selectedSurahIdx}
-        onChange={handleSurahChange}
-        placeholder="Select a Surah"
-      />
-
-      <SelectDropDown
-        label="Ayah"
-        options={ayahs.map((n) => ({ value: n, label: n }))}
-        value={selectedAyah}
-        onChange={handleAyahChange}
-        placeholder="Select an Ayah"
-        disabled={!ayahs.length}
-      />
-
-      {audioUrl && (
-        <AudioPlayer
-          autoPlay={false}
-          src={audioUrl}
-          showJumpControls={false}
-          showSkipControls={false}
-          customAdditionalControls={[]}
+    <QuranContext.Provider value={contextValue}>
+      <div style={{ padding: 24 }}>
+        <SelectDropDown
+          label="Surah"
+          options={surahs.map((s) => ({
+            value: s.index,
+            label: `${s.index}. ${s.title}`,
+          }))}
+          value={selectedSurahIdx}
+          onChange={handleSurahChange}
+          placeholder="Select a Surah"
         />
-      )}
-    </div>
+
+        <SelectDropDown
+          label="Ayah"
+          options={ayahs.map((n) => ({ value: n, label: n }))}
+          value={selectedAyah}
+          onChange={handleAyahChange}
+          placeholder="Select an Ayah"
+          disabled={!ayahs.length}
+        />
+
+        {audioUrl && <AudioPlayerSection />}
+      </div>
+    </QuranContext.Provider>
   );
 }
